@@ -1,5 +1,3 @@
-import $ from 'jquery'
+const {KEY} = require('./constant/base')
 
-$(function() {
-  $(document.body).text('hello webpack')
-})
+console.log(KEY)
