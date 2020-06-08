@@ -1,24 +1,28 @@
 const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 
 exports = module.exports = {
-  mode: 'development',
-  entry: './src/index.js',
+  entry: './src/js/index.js',
   output: {
     filename: 'main.js',
-    path: path.join(__dirname, 'dist')
+    path: path.join(__dirname, 'bundle')
   },
 
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        // use: 'css-loader'
-        use: ['style-loader', 'css-loader']
+  plugins: [
+    new CleanWebpackPlugin(),
+
+    new HtmlWebpackPlugin({
+      template: './main.html',
+      title: 'webpack series blogs',
+      filename: 'index.html',
+      minify: process.env.NODE_ENV === 'production' ? true : {
+        collapseWhitespace: false
       },
-      {
-        test: /\.md$/,
-        use: './loader/markdown-loader'
+      meta: {
+        viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
+        keyword: '博客，web前端，shotarich'
       }
-    ]
-  }
+    })
+  ]
 }

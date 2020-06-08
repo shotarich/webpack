@@ -75,7 +75,7 @@
 
 # webpack打包结果
   ## 生成后的代码
-  为了深入理解webpack的运行原理，接下来研究一下webpack打包后生成的bundle文件。为了研究简单，我们把src/index.js文件做一下修改后执行`npx webpack --mode development`(配置的后面再介绍)：
+  为了深入理解webpack的运行原理，接下来研究一下webpack打包后生成的bundle文件。为了研究简单，我们先使用commonjs规范，另外把src/index.js文件做一下修改后执行`npx webpack --mode development`(配置的后面再介绍)：
 
   ```javescript
     const {KEY} = require('./constant/base')
@@ -108,7 +108,7 @@
 
   ![webapck整体分析图](./imgs/webpack-breviary-res.png)
 
-  到这里已经很清晰了，实际上就是webpack实现了一套模块化的机制，这与node的commonjs规范如出一辙（当然我们这里使用的也是commonjs的导出模式），webpack也实现了es6的模块机制，这里后面再讲到，这里的目的是先认识一下webpack的主要实现原理（关于commonjs的加载原理这里不再赘述，有兴趣的可以参考阮一峰老师ES6入门书籍的Module的加载实现一节中有介绍到commonjs的加载原理）。
+  到这里已经很清晰了，实际上就是webpack实现了一套模块化的机制，这与node的commonjs规范如出一辙（当然我们这里使用的也是commonjs的导出模式），webpack也实现了es6的模块机制，关于es6模块的实现后面再讲到，这里的目的是先认识一下webpack的主要实现原理（关于commonjs的加载原理这里不再赘述，有兴趣的可以参考阮一峰老师ES6入门书籍的Module的加载实现一节中有介绍到commonjs的加载原理）。
 
 # 总结
   webpack本质上是一个解决了浏览器端模块化机制的打包工具，他以“万物皆模块”的思想将所有的模块打包成一个文件输出。除此之外，他还有着丰富的piugin和loader机制对相关文件进行优化并编译打包。
