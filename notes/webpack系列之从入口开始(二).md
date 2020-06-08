@@ -144,6 +144,7 @@ module.exports = {
       filename: 'index.html',
       // 指定要注入的打包文件，我们这里就只有一个bundle，因此就不指定了
       // chunks: [],
+
       // 是否压缩
       minify: process.env.NODE_ENV === 'production',
       // 指定meta
@@ -158,3 +159,66 @@ module.exports = {
 
 更多配置请移步[这里](https://www.npmjs.com/package/html-webpack-plugin)查看更多。
 
+# 使用dev-server开启开发服务
+
+使用了html-webpack-plugin插件后尽管已经实现了一部分自动化，但还远远不够。每次都要’更改源码 --> webpack打包 --> 运行应用 --> 浏览器查看‘，这样的开发方式还是很影响频率的。
+
+另外在平时的开发中难免要与后端进行ajax形式的接口联调，总是以file的协议形式访问总会产生一些问题，此时我们难免要开个本地服务进行一些调试。
+
+还有我们每次修改源码后都要重新打包编译，然后重新刷新浏览器查看最新效果，这与webpack要实现的自动化开发的设计初衷显然背道而驰。
+
+针对以上问题，devServe对其都有了解决方案。devServe提供了一个很好的本地开发服务，不仅可以实现自动打包构建的功能，还可以设置反向代理从而避免后端设置跨域允许访问的服务。webpack-dev-server是一个独立的npm模块，在使用之前要先安装。
+
+上代码：
+
+```javascript
+module.exoprts = {
+  devServer: {
+    // 指定本地服务从哪里获取静态资源，默认为当前目录（webpack的工作目录）
+    contentBase: path.join(__dirname, 'bundle'),
+    // 指定端口
+    port: 8080,
+    // 是否打开浏览器
+    open: true,
+    // 是否启用https服务
+    https: false,
+    // 是否启用gzip压缩
+    compress: true,
+    // 设置反向代理
+    proxy: {
+      // 请求 /api/user将代理到 http://localhost:3000/api/user
+      '/api': 'http://localhost:3000',
+
+      // 或者
+      '/api': {
+        target: 'http://localhost:3000',
+          
+        // path重定向，path从头匹配到/api替换为空
+      	// 请求 /api/user将代理到 http://localhost:3000/user
+        pathRewrite: {
+          '^/api': ''
+        },
+        // 默认代理服务器会以我们实际在浏览器中请求的主机名，也就是localhost:8080 作为代理
+        // 请求中的主机名。而一般服务器需要根据请求的主机名判断是哪个网站的请求，
+        // 那localhost:8080 这个主机名可能对于某些服务器无法正常请求
+        // changeOrigin设置为true后,请求这个地址的主机名是什么，实际请求GitHub 时就会设置成什么
+        changeOrigin: true
+      }
+    }
+  },
+}
+```
+
+这时再次更改package.json的dev脚本为:
+
+```javascript
+"scripts": {
+  "dev": "webpack-dev-server --mode development"
+}
+```
+
+执行脚本npm run dev将启动本地开发服务。至此，以上列出的三个问题都已经解决。执行脚本后可以发现，磁盘中并没有dundle目录，这是因为webpack-dev-server实在内存中打包构建并读取这些文件，这样一来就会避免很多不必要的读写磁盘操作，大大提高整体的构建效率。
+
+# 总结
+
+本系列次节通过一个图片列表的项目介绍了webpack的配置文件，使用了html-webpack-plugin插件实现自动注入bundle文件，另外还可根据不同需求配置相应的option得到应有的期望。webpack-dev-server工具启动本地服务实现更好的调试，另外可以打开watch模式实现更改源码而自动刷新页面的功能。

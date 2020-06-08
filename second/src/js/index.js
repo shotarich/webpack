@@ -1,6 +1,5 @@
 import $ from 'jquery'
 
-let url = ''
 switch(process.env.NODE_ENV) {
   case 'production':
     url = 'https://www.shotarich.com/getList'
@@ -19,7 +18,7 @@ switch(process.env.NODE_ENV) {
 $.ajax({
   url,
   method: 'get',
-  data: 'json',
+  dataType: 'json',
   success(resp) {
     $('#app').append()
   },
