@@ -9,6 +9,18 @@ exports = module.exports = {
     path: path.join(__dirname, 'bundle')
   },
 
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      }
+    ]
+  },
+
   devServer: {
     // 指定本地服务从哪里获取静态资源，默认为当前目录（webpack的工作目录）
     contentBase: path.join(__dirname, 'bundle'),
